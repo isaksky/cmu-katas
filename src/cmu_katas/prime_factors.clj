@@ -1,6 +1,7 @@
 (ns cmu-katas.prime-factors)
 
 (defn find-first [pred coll]
+  "Returns the first element the predicate is true for."
   (some (fn [e] (and (pred e) e))
         coll))
 
