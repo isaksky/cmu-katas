@@ -12,7 +12,7 @@
 (deftest tick-test
   (is (= #{} (tick #{[0 1]})) "Any live cell with fewer than two live neighbours dies, as if caused by under-population.")
   (let [board (tick #{[0 1] [0 2] [0 3]})]
-    (is (contains? (board [0 2])) "Any live cell with two or three live neighbours lives on to the next generation."))
+    (is (contains? board [0 2]) "Any live cell with two or three live neighbours lives on to the next generation."))
   (let [board (tick #{[1 0] [2 0] [3 0]
                       [1 1] [2 1]})]
     (is (nil? (board [2 0])) "Any live cell with more than three live neighbours dies, as if by overcrowding."))
