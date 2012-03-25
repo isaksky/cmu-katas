@@ -2,7 +2,7 @@
 
 (defn num-neighbors [cell board]
   (let [[x y] cell]
-    (count (filter (fn [cell] (board cell))
+    (count (filter (fn [cell] (contains? board cell))
                    (disj (into #{} (for [x (range (dec x) (+ 2 x))
                                          y (range (dec y) (+ 2 y))]
                                      [x y]))
