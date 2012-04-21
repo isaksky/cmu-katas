@@ -31,6 +31,7 @@
 
 (def starting-coins [100 25 10 5 1])
 
+;; TODO: Get this to work with wierd sets of coins, e.g., [10 7 1] for 14 cents
 (defn- change-priv [amt coins work]
   (if-not (seq coins) work
           (let [current-coin (first coins)
