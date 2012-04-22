@@ -29,14 +29,25 @@
 ;; If you prefer to return a hash instead of am array, that's ok too.
 ;; {1 => 1, 5 => 0, 10 => 1, 25 => 0, 100 => 0} equals $0.11
 
-(def starting-coins [100 25 10 5 1])
-
-;; TODO: Get this to work with wierd sets of coins, e.g., [10 7 1] for 14 cents
-(defn- change-priv [amt coins work]
-  (if-not (seq coins) work
-          (let [current-coin (first coins)
-                num-fit (int (/ amt current-coin))]
-            (change-priv (rem amt current-coin) (rest coins) (conj work num-fit)))))
+(def change-priv
+  (memoize
+   (fn [amt coins]
+     (cond
+      (< amt (apply min coins)) []
+      (some #{amt} coins) [amt]
+      :else (->> coins
+                 ;; Prune 1: Coins bigger than the amount are never part of the solution
+                 (remove (fn [coin] (< amt coin)))
+                 ;; Prune 2: Coins for which there is a bigger coin of which it is a factor are
+                 ;; not worth considering either
+                 (reduce (fn [memo coin]
+                           (if (some #(= 0 (rem % coin)) memo) memo
+                               (conj memo coin)))
+                         [])
+                 (map (fn [coin] (concat [coin] (change-priv (- amt coin) coins))))
+                 (filter (fn [coin-set] (= amt (reduce + coin-set))))
+                 (sort-by count)
+                 first)))))
 
 (defn change [amt coins]
-  (change-priv amt coins []))
+  (change-priv amt (sort > (set coins))))
