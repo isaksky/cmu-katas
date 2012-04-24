@@ -47,10 +47,6 @@
                 (iterate inc 1)
                 book-frequencies)))
 
-(defn all-book-combinations [unique-potter-books]
-  (reduce concat (map (fn [n] (c/combinations unique-potter-books n))
-                      (range 2 6))))
-
 (defn list-subtract
   "E.g., (list-subtract [1 1 3] [1 2]) ;=> [1 3]"
   [c1 c2]
@@ -63,12 +59,16 @@
             []
             c1-freqs)))
 
-(def solve
+(defn all-book-combinations [unique-potter-books]
+  (reduce concat (map (fn [n] (c/combinations unique-potter-books n))
+                      (range 2 6))))
+
+(def best-bundling
   (memoize
    (fn [books]
      (if-let [book-combinations (seq (all-book-combinations (set books)))]
        (->> book-combinations
-            (map (fn [book-combo] (concat [book-combo] (solve (list-subtract books book-combo)))))
+            (map (fn [book-combo] (concat [book-combo] (best-bundling (list-subtract books book-combo)))))
             (sort-by #(combos-price %))
             first)
        [books]))))

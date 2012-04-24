@@ -12,7 +12,7 @@
 
 (deftest solve-test
   (are [price books]
-       (= price                                 (combos-price (solve books)))
+       (= price                                 (combos-price (best-bundling books)))
        (+ 8 (* 8 2 0.95))                       [1 1 2]
        (* 2 (* 8 4 0.8))                        (book-set [2 2 2 1 1])
        (+ (* 3 (* 8 5 0.75)) (* 2 (* 8 4 0.8))) (book-set [5 5 4 5 4])))
