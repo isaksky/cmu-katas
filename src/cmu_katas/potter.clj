@@ -19,10 +19,13 @@
 
 (def base-book-price 8.00)
 
-(def pct-discount {2 0.05
-                   3 0.10
-                   4 0.20
-                   5 0.25})
+(defn pct-discount [num-unique-books]
+  (case num-unique-books
+    2 0.05
+    3 0.10
+    4 0.20
+    5 0.25
+    0))
 
 (defn price
   "E.g., (price [1 2]) => 15.2"
@@ -30,7 +33,7 @@
   (* (count bundle)
      (- base-book-price
         (* base-book-price
-           (or (pct-discount (count (set bundle))) 0)))))
+           (pct-discount (count (set bundle)))))))
 
 (defn combos-price
   "E.g., (price [[1 2] [1 2]]) => 30.4"
