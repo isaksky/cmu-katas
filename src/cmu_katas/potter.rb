@@ -1,4 +1,4 @@
-# Had some problems with lazy recursive list in clojure, so doing this one in ruby for now: 
+# Had some problems with lazy recursive list in clojure, so did this one in ruby first
 require 'set'
 BASE_BOOK_PRICE = 8.00
 PCT_DISCOUNT = Hash.new(0.0).merge  2 => 0.05, 3 => 0.10, 4 => 0.20, 5 => 0.25
@@ -74,6 +74,6 @@ end
 if __FILE__ == $0
   sample_books = [2,2,2,1,1]
   puts "Trying #{sample_books}"
-  answer = find_cheapest_combo book_set sample_books
-  puts "Answer \n #{answer}"
+  price, bundle = find_cheapest_combo book_set sample_books
+  puts "Price #{price} \t Bundles #{bundle}"
 end
