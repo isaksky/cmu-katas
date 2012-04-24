@@ -12,13 +12,6 @@
 ;; Output: [Seafood, Squid, Lobster, Shrimp, Mussel]
 ;; Your program should find all possible unique solutions.
 
-(def test-cols
-  [["S" "L" "SH" "SE" "M"]
-   ["A" "U" "Q" "R" "O"]
-   ["U" "F" "I" "B" "S"]
-   ["M" "SE" "ST" "I" "OO"]
-   ["ER" "P" "L" "D" "D"]])
-
 (defn working-dir-path [path]
   (str (. System getProperty "user.dir") path ))
 
@@ -44,3 +37,24 @@
 ;; "LOISEL" "LOBSTER" "SHRIMP" "SEAFOOD" "SEAFOOD" "MAISEL" "MASSED"
 ;; "MASSED" "MASOOD" "MASOOD" "MUSSEL" "MUSIL" "MOUSEL" "MOBSTER"
 ;; "MOBIL" "MOSIER")
+
+(def test-cols
+  [["S" "L" "SH" "SE" "M"]
+   ["A" "U" "Q" "R" "O"]
+   ["U" "F" "I" "B" "S"]
+   ["M" "SE" "ST" "I" "OO"]
+   ["ER" "P" "L" "D" "D"]])
+
+(def test-cols-2
+  [["A" "N" "K" "C" "B"]
+   ["P" "A" "IT" "OO" "A"]
+   ["R" "P" "CH" "K" "K"]
+   ["O" "K" "E" "I" "I"]
+   ["N" "IN" "N" "NG" "NG"]])
+
+(def test-cols-3
+  [["S" "M" "DE" "C" "L"]
+   ["VE" "A" "E" "OF" "E"]
+   ["T" "RN" "AD" "L" "LO"]
+   ["PI" "ER" "WA" "EG" "L"]
+   ["ON" "RE" "NG" "S" "IE"]])
