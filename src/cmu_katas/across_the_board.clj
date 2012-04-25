@@ -58,3 +58,17 @@
    ["T" "RN" "AD" "L" "LO"]
    ["PI" "ER" "WA" "EG" "L"]
    ["ON" "RE" "NG" "S" "IE"]])
+
+(defn ghetto-cartesian-product
+  "Built in cartesian-product made it to easy, so here is my own.
+   Not using it though, since built in version is much better. (It is iterative and lazy).
+   E.g., (ghetto-cartesian-product [[1 2] [3 4]]) ;=> ((1 3) (1 4) (2 3) (2 4))"
+  [colls]
+  (if (empty? colls)
+    [[]]
+    (reduce (fn [memo e]
+              (concat memo
+                      (map (fn [tail] (concat [e] tail))
+                           (ghetto-cartesian-product (rest colls)))))
+            []
+            (first colls))))
