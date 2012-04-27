@@ -23,7 +23,7 @@
 (def possible-stone-combos-2
   (into #{}
         (filter (fn [c] (= 40 (reduce + c)))
-                (map set (comb/selections (range 1 41) 4)))))
+                (map sort (comb/selections (range 1 41) 4)))))
 
 (defn- list-diff
   "What is in c1 that is not in c2?"
