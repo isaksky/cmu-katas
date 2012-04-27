@@ -10,20 +10,11 @@
 (ns cmu-katas.stones
   (:require [clojure.math.combinatorics :as comb]))
 
-(defmacro dbg[x] `(let [x# ~x] (println "dbg:" '~x "=" x#) x#))
-
-;; Wait a second, the below assumes the weight of the stones have to
-;; be different. Not necessarily true.
-
-(def possible-stone-combos-1
-  (filter (fn [c] (and (= 40 (reduce + c))))
-          (comb/combinations (for [i (range 1 41)] i) 4)))
-
-;; This one returns them all
-(def possible-stone-combos-2
-  (into #{}
-        (filter (fn [c] (= 40 (reduce + c)))
-                (map sort (comb/selections (range 1 41) 4)))))
+(defn possible-stone-combos []
+  (->> (comb/selections (range 1 41) 4)
+       (filter (fn [c] (= 40 (reduce + c))))
+       (map sort)
+       distinct))
 
 (defn- list-diff
   "What is in c1 that is not in c2?"
@@ -31,18 +22,16 @@
   (filter (fn [e] (not-any? #{e} c2)) c1))
 
 (defn can-weigh? [amt stone-combo]
-  (some (fn [subset]
-          (let [subset-sum (reduce + subset)
-                remain-subsets (comb/subsets (list-diff stone-combo subset))]
-            (some (fn [subset2] (= amt (- subset-sum
-                                         (reduce + subset2))) )
-                  remain-subsets)))
-        (comb/subsets stone-combo)))
+  (->> (comb/subsets stone-combo)
+       (some (fn [subset]
+               (let [remain-subsets (comb/subsets (list-diff stone-combo subset))]
+                 (->> remain-subsets
+                      (some (fn [subset2] (= amt (- (reduce + subset)
+                                         (reduce + subset2)))))))))))
 
 (defn stones [possible-stone-combos]
-  (into #{}
-        (filter (fn [stone-combo]
-                  (every? identity
-                          (map (fn [amt] (can-weigh? amt stone-combo))
-                               (range 1 41))))
-                possible-stone-combos)))
+  (->> possible-stone-combos
+       (filter (fn [stone-combo]
+                 (every? identity
+                         (map (fn [amt] (can-weigh? amt stone-combo))
+                              (range 1 41)))))))
