@@ -12,6 +12,16 @@
 ;; Output: [Seafood, Squid, Lobster, Shrimp, Mussel]
 ;; Your program should find all possible unique solutions.
 
+(defn transpose [matrix]
+  (apply map vector matrix))
+
+(defn format-input [input]
+  (->> (map (fn [square index] [square index])
+            input
+            (range (count input)))
+       (partition 5)
+       transpose))
+
 (defn working-dir-path [path]
   (str (. System getProperty "user.dir") path ))
 
@@ -24,40 +34,44 @@
        (map (fn [line] (first (str/split line #"\s"))))
        set))
 
-(defn find-words [columns]
-  (->> columns
+(defn find-words [input]
+  (->> input
+       format-input
        (apply comb/cartesian-product)
-       (map str/join)
-       (filter #(dict-words %))))
+       (reduce (fn [[square-indexes-used words-found] candidate]
+                 (let [candidate-word (str/join (map first candidate))
+                       candidate-indexes (map last candidate)]
+                   (if (and (not-any? (fn [candidate-index] (contains? square-indexes-used candidate-index))
+                                      candidate-indexes)
+                            (contains? dict-words candidate-word))
+                     [(apply conj square-indexes-used candidate-indexes) (conj words-found candidate-word)]
+                     [square-indexes-used words-found])))
+               [#{} []])
+       last))
 
-;; Example
-;; (find-words test-cols)
-;; Result: 
-;;("SAFIER" "SQUIER" "SQUID" "SQUID" "SOBIL" "LOUSED" "LOUSED"
-;; "LOISEL" "LOBSTER" "SHRIMP" "SEAFOOD" "SEAFOOD" "MAISEL" "MASSED"
-;; "MASSED" "MASOOD" "MASOOD" "MUSSEL" "MUSIL" "MOUSEL" "MOBSTER"
-;; "MOBIL" "MOSIER")
+;; Example: (find-words test-input-1)
+;;          => ["SAFIER" "LOUSED" "SHRIMP"]
 
-(def test-cols
-  [["S" "L" "SH" "SE" "M"]
-   ["A" "U" "Q" "R" "O"]
-   ["U" "F" "I" "B" "S"]
-   ["M" "SE" "ST" "I" "OO"]
-   ["ER" "P" "L" "D" "D"]])
+(def test-input-1
+  ["S" "A" "U" "M" "ER"
+   "L" "U" "F" "SE" "P"
+   "SH" "Q" "I" "ST" "L"
+   "SE" "R" "B" "I" "D"
+   "M" "O" "S" "OO" "D"])
 
-(def test-cols-2
-  [["A" "N" "K" "C" "B"]
-   ["P" "A" "IT" "OO" "A"]
-   ["R" "P" "CH" "K" "K"]
-   ["O" "K" "E" "I" "I"]
-   ["N" "IN" "N" "NG" "NG"]])
+(def test-input-2
+  ["A" "P" "R" "O" "N"
+   "N" "A" "P" "K" "IN"
+   "K" "IT" "CH" "E" "N"
+   "C" "OO" "K" "I" "NG"
+   "B" "A" "K" "I" "NG"])
 
-(def test-cols-3
-  [["S" "M" "DE" "C" "L"]
-   ["VE" "A" "E" "OF" "E"]
-   ["T" "RN" "AD" "L" "LO"]
-   ["PI" "ER" "WA" "EG" "L"]
-   ["ON" "RE" "NG" "S" "IE"]])
+(def test-input-3
+  ["S" "VE" "T" "PI" "ON"
+   "M" "A" "RN" "ER" "RE"
+   "DE" "E" "AD" "WA" "NG"
+   "C" "OF" "L" "EG" "S"
+   "L" "E" "LO" "L" "IE"])
 
 (defn ghetto-cartesian-product
   "Built in cartesian-product made it to easy, so here is my own.
