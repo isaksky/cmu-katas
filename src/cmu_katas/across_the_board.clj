@@ -15,7 +15,11 @@
 (defn transpose [matrix]
   (apply map vector matrix))
 
-(defn format-input [input]
+(defn format-input
+  "Change input into a form that is easier to work with.
+   Add an index to each square, and divide the input into 5
+   arrays that represent the columns."
+  [input]
   (->> (map (fn [square index] [square index])
             input
             (range (count input)))
@@ -72,6 +76,9 @@
    "DE" "E" "AD" "WA" "NG"
    "C" "OF" "L" "EG" "S"
    "L" "E" "LO" "L" "IE"])
+
+;; run all:
+;; (map find-words [test-input-1 test-input-2 test-input-3])
 
 (defn ghetto-cartesian-product
   "Built in cartesian-product made it to easy, so here is my own.
