@@ -47,7 +47,7 @@
   (is (= 8 (blocking-score partial-board-3 :a top-horizonal-coord-list [2 0]))))
 
 (deftest win-progress-score-test
-  (is (= 0 (win-progress-score {} :a top-horizonal-coord-list [2 0])))
+  (is (= 0.1 (win-progress-score {} :a top-horizonal-coord-list [2 0])))
   (is (= 1 (win-progress-score partial-board-2 :b top-horizonal-coord-list [2 0])))
   (is (= 32 (win-progress-score partial-board-3 :b top-horizonal-coord-list [2 0]))))
 
@@ -57,7 +57,7 @@
    [2 2] :b})
 
 (deftest score-test
-  (is (= 40 (score partial-board-4 [2 0] :a))))
+  (is (= 40.1 (score partial-board-4 [2 0] :a))))
 
 (def partial-board-5
   {[0 0] :b [1 0] :b

@@ -77,9 +77,13 @@
 
 (defn win-progress-score [board player coord-list coords]
   (cond (blocked? board coord-list player) 0
-        :else (let [player-frequencies (player-frequencies board coord-list)]
-                ;;Grows faster than block, b/c would rather win than block
-                (int (Math/pow (player-frequencies player) 5)))))
+        :else (let [this-player-frequencies (player (player-frequencies board coord-list))]
+                (if (= 0 this-player-frequencies)
+                  ;; Give a little bit of points for clear coord-lists. This will make corners score higher
+                  ;; than middles, since they are involved in more coord-lists, which is good.
+                  0.1
+                  ;;Grows faster than block, b/c would rather win than block
+                  (int (Math/pow this-player-frequencies 5))))))
 
 (defn score [board coords player]
   (let [related-coord-lists (filter #(some #{coords} %)
