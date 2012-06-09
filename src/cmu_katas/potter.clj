@@ -40,35 +40,29 @@
   [combos]
   (reduce + (map price combos)))
 
-(defn book-set
-  "E.g., (book-set [1 1 2 1 3]) ;=> (1 2 3 3 4 5 5 5)"
-  [book-frequencies]
-  (flatten (map (fn [book-number book-freq] (repeat book-freq book-number))
-                (iterate inc 1)
-                book-frequencies)))
-
-(defn list-subtract
-  "E.g., (list-subtract [1 1 3] [1 2]) ;=> [1 3]"
-  [c1 c2]
-  (let [[c1-freqs c2-freqs] (map frequencies [c1 c2])]
-    (reduce (fn [memo [v c1-freq]]
-              (let [c2-freq (or (c2-freqs v) 0)
-                    freq-diff (- c1-freq c2-freq)]
-                (if (< 0 freq-diff) (concat memo (repeat freq-diff v))
-                    memo)))
-            []
-            c1-freqs)))
-
 (defn all-book-combinations [unique-potter-books]
   (reduce concat (map (fn [n] (c/combinations unique-potter-books n))
                       (range 2 6))))
 
+(defn subtract-from-frequencies-map
+  "E.g., (subtract-from-frequencies-map {1 1, 2 3} [1 2]) => {2 2}"
+  [freq-map values]
+  (->> (merge-with - freq-map (frequencies values))
+       (remove (fn [[_ v]] (= 0 v)))
+       (into {})))
+
+(defn expand-frequencies-map
+  "E.g., (expand-frequencies-map {1 1, 2 3}) => [1 2 2 2]"
+  [freq-map]
+  (mapcat (fn [[k v]] (repeat v k)) freq-map))
+
+;; See tests for how to use
 (def best-bundling
   (memoize
-   (fn [books]
-     (if-let [book-combinations (seq (all-book-combinations (set books)))]
+   (fn [book-freqs]
+     (if-let [book-combinations (seq (all-book-combinations (keys book-freqs)))]
        (->> book-combinations
-            (map (fn [book-combo] (concat [book-combo] (best-bundling (list-subtract books book-combo)))))
+            (map (fn [book-combo] (concat [book-combo] (best-bundling (subtract-from-frequencies-map book-freqs book-combo)))))
             (sort-by #(combos-price %))
             first)
-       [books]))))
+       [(expand-frequencies-map book-freqs)]))))
