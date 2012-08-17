@@ -1,3 +1,3 @@
 # cmu-katas
 
-Some katas I'm doing for the CMU Software Craftmanship class.
+Some programming-challenges/katas I did as part of the CMU SV Software craftsmanship class.
